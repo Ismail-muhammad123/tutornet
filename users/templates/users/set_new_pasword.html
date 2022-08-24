@@ -1,0 +1,56 @@
+{% extends 'base/base.html' %} {% load static %} {% block content %}
+<!-- Login Start -->
+<div class="container-xxl py-5">
+  <div class="container">
+    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+      <h3 class="section-title bg-white text-center text-primary px-3">
+        Welcome
+      </h3>
+      <div
+        class="col-lg-6 col-md-12 mt-5 mb-5 wow fadeInUp"
+        data-wow-delay="0.5s"
+      >
+        <form method="post" action="{% url 'new_password' %}">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-12">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  name="id"
+                  id="id"
+                  name="id"
+                  hidden
+                  value="{{id}}"
+                />
+                <input
+                  type="text"
+                  name="token"
+                  id="token"
+                  name="token"
+                  hidden
+                  value="{{token}}"
+                />
+                <input
+                  name="password"
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  placeholder="password"
+                />
+                <label for="subject">New Password</label>
+              </div>
+            </div>
+            <div class="col-12">
+              <button class="btn btn-primary w-100 py-3" type="submit">
+                Submit
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Login End -->
+{% endblock %}
