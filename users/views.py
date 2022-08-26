@@ -13,6 +13,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .tokens import account_activation_token
+from django.http import Http404
 
 
 def send_account_verification_email(request, user):
@@ -170,9 +171,7 @@ def verify_account(request, id, token):
 
 
 def forget_password(request):
-    if request.method == "GET":
-        return render(request, 'users/forget_password.html')
-    
+
     if request.method == "POST":
         email = request.POST.get('email', None)
         if email is not None:
@@ -180,13 +179,17 @@ def forget_password(request):
             try:
                 usr = User.objects.get(email=email)
                 send_password_reset_email(request, usr)
-                
+                return render(request, 'users/email_reset_code_sent.html')
+
             except User.DoesNotExist:
-                messages.add_message(request, messages.ERROR, "No user with given email is found")
-                return render(request, 'users/forget_password.html')
+                messages.add_message(
+                    request, messages.ERROR, "No user with given email is found")
+
+    return render(request, 'users/forget_password.html')
 
 
 def new_password(request, id, token):
+    # get user by verifying given id and token
     User = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(id))
@@ -194,13 +197,37 @@ def new_password(request, id, token):
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        user
-        user.save()
-        messages.add_message(request, messages.SUCCESS,
-                             'Your account is now activated')
-        return redirect('profile_page')
+        # if user is found,
+        if request.method == "GET":
+            # if the request is get, meaning from the email, render set new password form
+            return render(request, 'users/set_new_password.html', context={"id": id, "token": token})
+
+        # if request is post, meaning from set password form,
+        if request.method == "POST":
+            password = request.POST.get("password", None)
+            # check if password is provided
+            if password is not None:
+                try:
+                    # try settinf a new password for the user and then redirect to profile page
+                    user.set_password(password)
+                    user.save()
+                    messages.add_message(request, messages.SUCCESS,
+                                         'Your account is now activated')
+                    return redirect('login_page')
+                except:
+                    # if setting password failed, set an error message and redirect to set password page
+                    messages.add_message(request, messages.ERROR,
+                                         'Invalid password, please try again')
+                    return render(request, 'users/set_new_password.html', context={"id": id, "token": token})
+            else:
+                # if not password is provided from the form, set error and redirect back to set password page
+                messages.add_message(request, messages.ERROR,
+                                     'Invalid password, please try again')
+                return render(request, 'users/set_new_password.html', context={"id": id, "token": token})
     else:
-        return render(request, 'base/404.html')
+        # if the id and/or token provided are wrong, redirect to invali_code page.
+        return render(request, 'users/invalid_code.html')
+
 
 def profile(request):
     return render(request, 'users/profile.html')

@@ -8,17 +8,9 @@
       </h6>
       {% if messages %} {% for message in messages %}
 
-      <div
-        class="alert alert-{{ message.tags }} alert-dismissible fade show"
-        role="alert"
-      >
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
         <strong>{{message.tags}}!</strong> {{message}}
-        <button
-          type="button"
-          class="close"
-          data-dismiss="alert"
-          aria-label="Close"
-        >
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -26,52 +18,28 @@
       {% endfor %} {% endif %}
     </div>
     <div class="row align-items-center justify-content-center g-4">
-      <div
-        class="col-lg-6 col-md-6 text-center wow fadeInUp"
-        data-wow-delay="0.1s"
-      >
+      <div class="col-lg-6 col-md-6 text-center wow fadeInUp" data-wow-delay="0.1s">
         <h2>Login to your Account</h2>
       </div>
-      <div
-        class="col-lg-6 col-md-12 mt-5 mb-5 wow fadeInUp"
-        data-wow-delay="0.5s"
-      >
+      <div class="col-lg-6 col-md-12 mt-5 mb-5 wow fadeInUp" data-wow-delay="0.5s">
         <form action="{% url 'register_page' %}" method="post">
           {% csrf_token %}
           <div class="row g-3">
             <div class="col-6">
               <div class="form-floating">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="first_name"
-                  name="first_name"
-                  placeholder="First Name"
-                />
+                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" />
                 <label for="name">First Name</label>
               </div>
             </div>
             <div class="col-6">
               <div class="form-floating">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="last_name"
-                  name="last_name"
-                  placeholder="Last Name"
-                />
+                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" />
                 <label for="name">Last Name</label>
               </div>
             </div>
             <div class="col-6">
               <div class="form-floating">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="phone"
-                  name="phone"
-                  placeholder="Phone Number"
-                />
+                <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone Number" />
                 <label for="name">Phone Number</label>
               </div>
             </div>
@@ -86,36 +54,20 @@
             </div>
             <div class="">
               <div class="form-floating">
-                <input
-                  type="text"
-                  class="form-control"
-                  name="email"
-                  id="email"
-                  placeholder="Email"
-                />
+                <input type="text" class="form-control" name="email" id="email" placeholder="Email" />
                 <label for="name">Your Email</label>
               </div>
             </div>
 
             <div class="col-6">
               <div class="form-floating">
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  name="password"
-                  placeholder="password"
-                />
+                <input type="password" class="form-control" id="password" name="password" placeholder="password" />
                 <label for="subject">Password</label>
               </div>
             </div>
             <div class="col-6">
               <div class="form-floating">
-                <select
-                  class="form-control bg-light"
-                  name="account_type"
-                  id="type"
-                >
+                <select class="form-control bg-light" name="account_type" id="type">
                   <option value="S">Student</option>
                   <option value="T">Tutor</option>
                 </select>
@@ -126,6 +78,9 @@
               <button class="btn btn-primary w-100 py-3" type="submit">
                 Register
               </button>
+            </div>
+            <div class="col-12 text-end">
+              <a href="{% url 'login_page' %}">Already have an account?</a>
             </div>
           </div>
         </form>
