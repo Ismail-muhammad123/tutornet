@@ -9,6 +9,7 @@ urlpatterns = [
     path('verify-account/<str:id>/<str:token>',
          views.verify_account, name='verify_account_page'),
 
+    path('update-profile', views.edit_profile, name='update_profile'),
     path('my-profile', views.profile, name='profile_page'),
     path('logout', views.logout_user, name='logout_user'),
 

@@ -17,4 +17,9 @@ class UserAdmin(admin.ModelAdmin):
         "staff",
         "is_active",
         "tutor",
+        "profile_picture",
+    ]
+
+    list_display_links = [
+        "email"
     ]

@@ -1,0 +1,78 @@
+{% extends 'base/base.html' %} {% load static %} {% block content %}
+<!-- Login Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">
+                Update Profile
+            </h6>
+            {% if messages %} {% for message in messages %}
+
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <strong>{{message.tags}}!</strong> {{message}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            {% endfor %} {% endif %}
+        </div>
+        <div class="row align-items-center justify-content-center g-4">
+            <div class="col-lg-6 col-md-6 text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h2>Update Your Account</h2>
+            </div>
+            <div class="col-lg-6 col-md-12 mt-5 mb-5 wow fadeInUp" data-wow-delay="0.5s">
+                <form action="{% url 'update_profile' %}" method="post"  enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="custom-file border rounded px-3 py-1">
+                                <input type="file" class="custom-file-input" name="profile_picture" id="customFileLang"
+                                    lang="es">
+                                <label class="custom-file-label" for="customFileLang">Select Profile Picture (max:
+                                    1MB)</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="first_name" value="{{user.first_name}}"
+                                    name="first_name" placeholder="First Name" />
+                                <label for="name">First Name</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="last_name" value="{{user.last_name}}"
+                                    name="last_name" placeholder="Last Name" />
+                                <label for="name">Last Name</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" value="{{user.mobile_number}}" id="phone"
+                                    name="mobile_number" placeholder="Phone Number" />
+                                <label for="name">Phone Number</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <select class="form-control bg-light" name="gender" id="gender">
+                                    <option {% if user.gender == "M" %} selected {% endif %} value="M">Male</option>
+                                    <option {% if user.gender == "F" %} selected {% endif %} value="F">Female</option>
+                                </select>
+                                <label for="name">Gender</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary w-100 py-3" type="submit">
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Login End -->
+{% endblock %}

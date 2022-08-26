@@ -14,6 +14,8 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .tokens import account_activation_token
 from django.http import Http404
+from django.contrib.auth.decorators import login_required
+from .forms import ProfileForm
 
 
 def send_account_verification_email(request, user):
@@ -67,8 +69,8 @@ def login_user(request):
     user = authenticate(email=email, password=password)
 
     if user is not None:
-        login(request, user)
         if user.is_active:
+            login(request, user)
             return redirect(next) if next else redirect('home_page')
         else:
             return redirect('not_verified_page')
@@ -80,6 +82,9 @@ def login_user(request):
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect("home_page")
+
     if request.method == "GET":
         return render(request, 'users/register.html')
 
@@ -229,8 +234,27 @@ def new_password(request, id, token):
         return render(request, 'users/invalid_code.html')
 
 
+@login_required(login_url='login_page')
 def profile(request):
+
     return render(request, 'users/profile.html')
+
+
+@login_required(login_url='login_page')
+def edit_profile(request):
+    if request.method == "POST":
+        user = request.user
+        form = ProfileForm(instance=user, data=request.POST,
+                           files=request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('profile_page')
+        else:
+            for error in form.errors:
+                messages.add_message(request, messages.ERROR, str(error))
+            return render(request, 'users/edit_profile.html')
+
+    return render(request, 'users/edit_profile.html')
 
 
 def logout_user(request):
