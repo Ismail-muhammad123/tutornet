@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'courses',
     'users',
     'tests',
@@ -111,9 +112,8 @@ USE_L10N = True
 USE_TZ = True
 
 
-
 AWS_STORAGE_BUCKET_NAME = 'tutornet'
-AWS_S3_REGION_NAME = 'eu-west-2' 
+AWS_S3_REGION_NAME = 'eu-west-2'
 AWS_ACCESS_KEY_ID = 'AKIAQXLZN6YASKRPEI4X'
 AWS_SECRET_ACCESS_KEY = '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'
 
@@ -137,8 +137,6 @@ MEDIAFILES_LOCATION = 'media'
 DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIAFILES_LOCATION}/'
-
-
 
 
 # Default primary key field type
