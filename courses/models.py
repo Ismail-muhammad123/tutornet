@@ -44,6 +44,9 @@ class Course(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    def get_full_duration(self):
+        return 10
+
 
 class Module(models.Model):
     title = models.CharField(max_length=100)

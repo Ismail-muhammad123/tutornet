@@ -1,11 +1,47 @@
-{% extend 'base/base.html' %}
+{% extends 'base/base.html' %}
 {% load static %}
 
 {% block title %}
 Categories
 {%endblock%}
 {% block content %}
-<section class="container">
-    <h1>categories</h1>
-</section>
+<div class="container-xxl py-5 category">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">
+                Categories
+            </h6>
+            <h1 class="mb-5 text-uppercase">Categories</h1>
+        </div>
+        <!-- <div class="row g-3"> -->
+        <div class="row g-3 justify-content-center">
+            {% for category in categories %}
+
+            <div class="col-lg-3 col-md-12 wow zoomIn border m-1 text-center" data-wow-delay="0.3s">
+                <a class="position-relative d-block overflow-hidden"
+                    href="{% url 'category_courses_list' category_slug=category.slug %}">
+                    <img src="{{category.cover_photo.url}}" height="300px" width="200px" style="object-fit:contain;"
+                        alt="" />
+                    <div class="bg-white text-center position-absolute bottom-0 w-100 end-0 py-2" style="margin: 1px;">
+                        <h5 class="m-0">{{category.name}}</h5>
+                        <small class="text-primary">{{category.courses.count}} Courses</small>
+                    </div>
+                </a>
+            </div>
+
+            {% endfor %}
+        </div>
+        <!-- <div class="col-lg-5 col-md-6 wow zoomIn" data-wow-delay="0.7s" style="min-height: 350px;">
+                <a class="position-relative d-block h-100 overflow-hidden" href="">
+                    <img class="img-fluid position-absolute w-100 h-100" src="{% static 'base/img/cat-4.jpg' %}" alt=""
+                        style="object-fit: cover;" />
+                    <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3" style="margin:  1px;">
+                        <h5 class="m-0">Online Marketing</h5>
+                        <small class="text-primary">49 Courses</small>
+                    </div>
+                </a>
+            </div> -->
+        <!-- </div> -->
+    </div>
+</div>
 {% endblock %}

@@ -11,12 +11,20 @@ Courses
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-10 text-center">
-                <h1 class="display-3 text-white animated slideInDown">Select from our Courses</h1>
+                <h1 class="display-3 text-white animated slideInDown text-capitalize">Select from our Courses</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb justify-content-center">
                         <li class="breadcrumb-item">
                             <a class="text-white" href="{% url 'home_page' %}">Home</a>
                         </li>
+                        {% if category %}
+                        <li class="breadcrumb-item text-white active" aria-current="page">
+                            Categories
+                        </li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">
+                            {{category.name}}
+                        </li>
+                        {% endif %}
                         <li class="breadcrumb-item text-white active" aria-current="page">
                             courses
                         </li>
@@ -35,24 +43,50 @@ Courses
                 <h6 class="section-title bg-white text-center text-primary px-3">
                     Courses
                 </h6>
+                <form action="" method="get">
+                    <div class="row my-2">
+                        <div class="col-lg-7 col-sm-12">
+                            <div class="form-floating">
+                                <input type="text" name="search" id="search" value="{{search_text}}"
+                                    class="form-control">
+                                <label for="search">Search Course Title</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-floating">
+                                <select name="category" id="category" class="form-control">
+                                    <option value="">All</option>
+                                    {% for category in categories %}
+                                    <option {% if category.slug == category_slug %} selected {% endif %}
+                                        value="{{category.slug}}">{{category.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="category">Filter Category:</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <button type="submit" class="btn btn-primary rounded shadow h-100">Submit</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="row g-4 justify-content-center">
+            <div class="row g-4 mt-3 justify-content-center">
                 {% for course in courses %}
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="col-lg-4 col-md-6 wow border mx-1 p-0 fadeInUp" data-wow-delay="0.1s">
                     <div class="course-item bg-light">
                         <div class="position-relative overflow-hidden">
+                            <!-- <img class="img-fluid" src="{{course.cover_photo.url}}" alt="" /> -->
                             <img class="img-fluid" src="{{course.cover_photo.url}}" alt="" />
                             <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
                                 <a href="{% url 'course_details' slug=course.slug %}"
                                     class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
                                     style="border-radius: 30px 0 0 30px;">Read More</a>
                                 <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3"
-                                    style="border-radius: 0 30px 30px 0;">Join
-                                    Now</a>
+                                    style="border-radius: 0 30px 30px 0;">Join Now</a>
                             </div>
                         </div>
                         <div class="text-center p-4 pb-0">
-                            <h3 class="mb-0">$149.00</h3>
+                            <h3 class="mb-0"> &#x20A6; {{course.price}}</h3>
                             <div class="mb-3">
                                 <small class="fa fa-star text-primary"></small>
                                 <small class="fa fa-star text-primary"></small>
@@ -67,14 +101,12 @@ Courses
                         </div>
                         <div class="d-flex border-top">
                             <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-user-tie text-primary me-2"></i>{{course.tutor.first_name}}
-                                {{course.tutor.last_name}}</small>
+                                    class="fa fa-user-tie text-primary me-2"></i>{{course.tutor.get_full_name}}</small>
                             <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-clock text-primary me-2"></i>1.49
-                                Hrs</small>
+                                    class="fa fa-clock text-primary me-2"></i>{{course.modules.count}} Modules</small>
                             <small class="flex-fill text-center py-2"><i
                                     class="fa fa-user text-primary me-2"></i>{{course.enrolements.count}}
-                                Students</small>
+                                Enroled</small>
                         </div>
                     </div>
                 </div>

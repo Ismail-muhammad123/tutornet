@@ -60,9 +60,9 @@
       <div class="navbar-nav ms-auto p-4 p-lg-0">
         <a href="{% url 'home_page' %}" class="nav-item nav-link">Home</a>
         <a href="{% url 'about_page' %}" class="nav-item nav-link">About</a>
-        <a href="courses.html" class="nav-item nav-link">Categories</a>
+        <a href="{% url 'categories_list' %}" class="nav-item nav-link">Categories</a>
         <a href="{% url 'courses_list' %}" class="nav-item nav-link">Courses</a>
-        <a href="courses.html" class="nav-item nav-link">Tutors</a>
+        <a href="{% url 'tutors_list' %}" class="nav-item nav-link">Tutors</a>
         <div class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Account</a>
           {% if user.is_authenticated %}
@@ -79,7 +79,7 @@
         </div>
         <a href="{% url 'contact_page' %}" class="nav-item nav-link">Contact</a>
       </div>
-      <a href="{% url 'login_page' %}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Join Now<i
+      <a href="{% url 'login_page' %}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Start Learning<i
           class="fa fa-arrow-right ms-3"></i></a>
     </div>
   </nav>

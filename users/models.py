@@ -67,6 +67,7 @@ class User(AbstractBaseUser):
     first_name = models.CharField(max_length=200, blank=True, default="")
     last_name = models.CharField(max_length=200, blank=True, default="")
     mobile_number = models.CharField(max_length=20)
+    added_on = models.DateTimeField(auto_now_add=True)
     gender = models.CharField(
         max_length=1, choices=GENDER_CHOICES, blank=True, default="")
     profile_picture = models.ImageField(null=True, blank=True)
@@ -106,3 +107,8 @@ class User(AbstractBaseUser):
     def is_admin(self):
         "Is the user a admin member?"
         return self.admin
+
+    @property
+    def is_tutor(self):
+        "Is the user a tutor?"
+        return self.tutor
