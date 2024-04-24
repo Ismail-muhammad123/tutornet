@@ -1,0 +1,106 @@
+{% extends 'base/base.html' %} {% load humanize %} {% load static %} {% block title %} {{course.title}} |
+Tutornet {% endblock %} {% block content %}
+<!-- Header Start -->
+<div class="container-fluid bg-primary py-5 mb-5 page-header">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1 class="display-3 text-white animated slideInDown">{{course.title}}</h1>
+                <h3>{{module.name}}</h3>
+                <!-- <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item">
+                            <a class="text-white" href="">Modules</a>
+                        </li>
+                        <li class="breadcrumb-item">
+
+                        </li>
+                    </ol>
+                </nav> -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header End -->
+
+
+<!-- Module Video -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-12 tet-center wow fadeInUp" data-wow-delay="0.1s">
+                <h3 class="text-center text-capitalize">Video Lesson</h3>
+            </div>
+            <div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
+                <center>
+                    <video width="100%" controls>
+                        <source src="{{module.video.url}}" type="video/mp4" />
+                        Your browser does not support the video playing.
+                    </video>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Preview End -->
+
+<!-- Content Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h2>
+                    Previous Module
+                </h2>
+            </div>
+
+            {% if p_module %}
+
+
+
+            <a href="{% url 'module_details_page' course_slug=course.slug module_slug=p_module.slug %}">
+
+                <div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <h5 class="mb-3">{{p_module.title}}</h5>
+                            <p>{{p_module.description}}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ------------------------------------------------ -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <h2>
+                        Next Module
+                    </h2>
+                </div>
+
+                {% if next_module %}
+
+
+                <a href="{% url 'module_details_page' course_slug=course.slug module_slug=next_module.slug %}">
+
+                    <div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="service-item text-center pt-3">
+                            <div class="p-4">
+                                <h5 class="mb-3">{{next_module.title}}</h5>
+                                <p>{{next_module.description}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Content End -->
+
+        {% endblock %}

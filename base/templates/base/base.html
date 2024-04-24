@@ -46,6 +46,14 @@
   </div>
   <!-- Spinner End -->
 
+  {% for message in messages %}
+
+  <div class="alert {{message.tags}} alert-dismissible fade show" role="alert">
+    {{message}}
+  </div>
+
+  {% endfor %}
+
   <!-- Navbar Start -->
   <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
     <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
@@ -99,16 +107,16 @@
           <a class="btn btn-link" href="">Terms & Condition</a>
           <a class="btn btn-link" href="">FAQs & Help</a>
         </div>
-        <div class="col-lg-3 col-md-6">
+        <div class="col-lg-4 col-md-6">
           <h4 class="text-white mb-3">Contact</h4>
           <p class="mb-2">
             <i class="fa fa-map-marker-alt me-3"></i>Kano State, Nigeria
           </p>
           <p class="mb-2">
-            <i class="fa fa-phone-alt me-3"></i>+012 345 67890
+            <i class="fa fa-phone-alt me-3"></i>+234 808 2668519
           </p>
           <p class="mb-2">
-            <i class="fa fa-envelope me-3"></i>info@example.com
+            <i class="fa fa-envelope me-3"></i>help.tutornet@gmail.com
           </p>
           <div class="d-flex pt-2">
             <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
@@ -117,40 +125,19 @@
             <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
           </div>
         </div>
-        <div class="col-lg-3 col-md-6">
-          <h4 class="text-white mb-3">Gallery</h4>
-          <div class="row g-2 pt-2">
-            <div class="col-4">
-              <img class="img-fluid bg-light p-1" src="{% static 'base/img/course-1.jpg' %}" alt="" />
-            </div>
-            <div class="col-4">
-              <img class="img-fluid bg-light p-1" src="{% static 'base/img/course-2.jpg' %}" alt="" />
-            </div>
-            <div class="col-4">
-              <img class="img-fluid bg-light p-1" src="{% static 'base/img/course-3.jpg' %}" alt="" />
-            </div>
-            <div class="col-4">
-              <img class="img-fluid bg-light p-1" src="{% static 'base/img/course-2.jpg' %}" alt="" />
-            </div>
-            <div class="col-4">
-              <img class="img-fluid bg-light p-1" src="{% static 'base/img/course-3.jpg' %}" alt="" />
-            </div>
-            <div class="col-4">
-              <img class="img-fluid bg-light p-1" src="{% static 'base/img/course-1.jpg' %}" alt="" />
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
+        <div class="col-lg-5 col-md-6">
           <h4 class="text-white mb-3">Newsletter</h4>
           <p>
-            SignUp for our newsletter to recieve any recent update directly
+            Sign up for our free newsletter to recieve recent updates directly
             from us.
           </p>
           <div class="position-relative mx-auto" style="max-width: 400px;">
-            <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email" />
-            <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">
-              SignUp
-            </button>
+            <form action="{% url 'subscribe_newsletter' %}" method="get">
+              <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" name="email" type="email"
+                placeholder="Your email" />
+              <input type="submit" value="SignUp"
+                class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2" />
+            </form>
           </div>
         </div>
       </div>
@@ -189,6 +176,9 @@
 
   <!-- Template Javascript -->
   <script src="{% static 'base/js/main.js' %}"></script>
+  <script>
+    $('.alert').alert();
+  </script>
 </body>
 
 </html>

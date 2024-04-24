@@ -1,0 +1,56 @@
+{% extends 'base/base.html' %} {% load humanize %} {% load static %} {% block title %} {{course.title}} |
+Tutornet {% endblock %} {% block content %}
+<!-- Header Start -->
+
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <h2 class="text-uppercase">{{course.title}}</h2>
+        <p>
+            <strong>Price:</strong> &#x20A6; {{course.price|intcomma}}
+        </p>
+        <p>
+        <form action="" method="get">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-floating">
+                        <input type="text" name="referal_code" id="referal_code" value="{{coupon_code}}"
+                            class="form-control">
+                        <label for="referal_code">Discount Code</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <button type="submit" class="btn btn-primary rounded shadow h-100">Verify</button>
+                </div>
+            </div>
+            <p>
+                {% if coupon_valid %}
+                <span class="text-success">Verified</span>
+                {% elif coupon_code != '' and not coupon_valid %}
+                <span class="text-danger">invalid coupon code</span>
+                {% endif %}
+            </p>
+        </form>
+        </p>
+
+        <p>
+            <strong>Discount:</strong> {{discount|default:0}}%
+        </p>
+        <p>
+            <strong>Total:</strong>&#x20A6; {{total_amount|default:course.price|intcomma}}
+        </p>
+        <form action="{% url 'complete_enrole_course' course_id=course.id course_slug=course.slug %}">
+
+            <input type="text" hidden name="coupon_code" value="{{coupon_code}}">
+            <input type="number" hidden name="coupon_id" value="{{coupon_id}}">
+
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-warning rounded shadow h-100 ">Proceed To payment</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Content End -->
+
+{% endblock %}

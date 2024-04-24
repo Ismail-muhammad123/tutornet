@@ -1,5 +1,8 @@
 from pathlib import Path
-
+import os
+from django.urls import reverse_lazy
+from django.contrib import messages
+#import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -8,13 +11,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-whzp8+@_mwyp$)-b6jc5@8edbrch1u-9wnwctyz@flgl@)k6y4'
+SECRET_KEY = os.environ.get("SECRET_KEY", "testing key insecure")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-PRODUCTION = False
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+PRODUCTION = os.environ.get("PRODUCTION", "True") == "True"
+
+HOST_ADDRESS = os.environ.get("HOST_ADDRESS")
 
 ALLOWED_HOSTS = []
+
+if DEBUG:
+    ALLOWED_HOSTS.append("*")
+else:
+    ALLOWED_HOSTS.append(HOST_ADDRESS)
 
 
 # Application definition
@@ -30,6 +40,7 @@ INSTALLED_APPS = [
     'courses',
     'users',
     'tests',
+    'checkout',
     'base',
 ]
 
@@ -112,14 +123,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGIN_URL = "/account/login"
+
 
 if PRODUCTION:
-
-    AWS_STORAGE_BUCKET_NAME = 'tutornet'
-    AWS_S3_REGION_NAME = 'eu-west-2'
-    AWS_ACCESS_KEY_ID = 'AKIAQXLZN6YASKRPEI4X'
-    AWS_SECRET_ACCESS_KEY = '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'
-
+    AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")
+    AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
     # Tell django-storages the domain to use to refer to static files.
     AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
@@ -139,11 +150,24 @@ if PRODUCTION:
 
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIAFILES_LOCATION}/'
 
+    # STATICFILES_DIRS = (os.path.join(BASE_DIR, 'staticfiles'),)
+
     # Default primary key field type
     # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
     DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+    DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.postgresql_psycopg2',
+           'NAME': os.environ.get('DB_NAME'),
+           'USER': os.environ.get('DB_USERNAME'),
+           'PASSWORD': os.environ.get('DB_PASSWORD'),
+           'HOST': os.environ.get('DB_HOST'),
+           'PORT': int(os.environ.get('DB_PORT', '5432')),
+        }
+    }
 else:
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -152,7 +176,7 @@ else:
     }
     DEBUG = True
     MEDIA_URL = '/media/'
-    MEDIA_ROOT =  BASE_DIR / 'media'
+    MEDIA_ROOT = BASE_DIR / 'media'
     STATIC_URL = '/static/'
     STATIC_ROOT = BASE_DIR / 'static'
     ALLOWED_HOSTS = ["*"]
@@ -166,3 +190,22 @@ if DEBUG:
     EMAIL_HOST_PASSWORD = ''
     EMAIL_USE_TLS = False
     DEFAULT_FROM_EMAIL = 'testing@example.com'
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-secondary',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
+
+
+# Payment variables
+# REDIRECT_URL = reverse_lazy("verify_payment")
+REDIRECT_URL = f"{HOST_ADDRESS}/checkout/verify/"
+PAYMENT_GATEAWAY_URL = "https://api.paystack.co/transaction/initialize"
+PAYMENT_VERIFICATION_URL = " https://api.paystack.co/transaction/verify/"
+PAYMENT_GATEAWAY_SECRET_KEY = os.environ.get(
+    "PAYMENT_GATEAWAY_SECRET_KEY") if PRODUCTION else "sk_test_101c18b159003a6834c9afdce74ad605c263e9ff"
+PAYMENT_GATEAWAY_PUBLIC_KEY = os.environ.get(
+    "PAYMENT_GATEAWAY_PUBLIC_KEY") if PRODUCTION else "pk_test_30a432931b900200ba3ac5e7a21141f1d136e99e"

@@ -6,8 +6,6 @@ from django.core.exceptions import ValidationError
 from django import forms
 from users.models import User
 
-# Register your models here.
-
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -91,6 +89,6 @@ class UserAdmin(BaseUserAdmin):
                        'mobile_number', 'gender', 'profile_picture', 'tutor', 'password1', 'password2'),
         }),
     )
-    search_fields = ('email', 'mobile_number')
+    search_fields = ('email', 'mobile_number', 'first_name', 'last_name')
     ordering = ('email', 'added_on',)
     filter_horizontal = ()

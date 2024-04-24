@@ -16,6 +16,7 @@ from .tokens import account_activation_token
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm
+from courses.models import Enrolement
 
 
 def send_account_verification_email(request, user):
@@ -51,16 +52,24 @@ def send_password_reset_email(request, user):
 
 
 def login_user(request):
+    get_data = request.GET
+    
+    next = get_data.get('next', None)
+
+    if next == None:
+        next = request.session.get('next_page', None)
+
+    if next is not None:
+        request.session['next_page'] = next
+   
     if request.user.is_authenticated:
-        return redirect('home_page')
+        return redirect(next if next is not None else 'home_page')
 
     if request.method == "GET":
         return render(request, 'users/login.html')
 
-    get_data = request.GET
-    next = get_data.get('next', None)
-    if next:
-        request.session['next_page'] = next
+    
+  
 
     data = request.POST
     email = data['email']
@@ -71,7 +80,7 @@ def login_user(request):
     if user is not None:
         if user.is_active:
             login(request, user)
-            return redirect(next) if next else redirect('home_page')
+            return redirect(next) if next != None else redirect('home_page')
         else:
             return redirect('not_verified_page')
 
@@ -82,8 +91,17 @@ def login_user(request):
 
 
 def register(request):
+    next = request.GET.get('next', None)
+
+    if next == None:
+        next = request.session.get('next_page', None)
+    if next is not None:
+        request.session['next_page'] = next
+
     if request.user.is_authenticated:
-        return redirect("home_page")
+        return redirect(next if next is not None else "home_page")
+
+
 
     if request.method == "GET":
         return render(request, 'users/register.html')
@@ -91,9 +109,7 @@ def register(request):
     if request.method == "POST":
         if request.user.is_authenticated:
             return redirect('home_page')
-        next = request.GET.get('next', None)
-        if next:
-            request.session['next_page'] = next
+        
 
         data = request.POST
 
@@ -127,8 +143,8 @@ def register(request):
             email=email,
             mobile_number=phone_number,
             gender=gender,
-            is_active=False,
-            tutor=True if account_type.lower() == 't' else False
+            is_active=True,
+            tutor=False,
         )
         user.set_password(password)
         #  save user
@@ -237,7 +253,13 @@ def new_password(request, id, token):
 @login_required(login_url='login_page')
 def profile(request):
 
-    return render(request, 'users/profile.html')
+    enrolements = request.user.enrolements.filter(status=1)
+
+    context = {
+        "enrolements": enrolements
+    }
+
+    return render(request, 'users/profile.html', context=context)
 
 
 @login_required(login_url='login_page')

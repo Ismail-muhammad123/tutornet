@@ -1,4 +1,4 @@
-{% extends 'base/base.html' %} {% load static %} {% block content %}
+{% extends 'base/base.html' %} {% load humanize %} {% load static %} {% block content %}
 <!-- profile start -->
 <div class="container-xxl py-5">
     <div class="container">
@@ -6,8 +6,8 @@
             <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
                 <div class="position-relative h-100">
                     {% if user.profile_picture %}
-                    <img class="img-fluid position-absolute w-100 h-100" src="{{user.profile_picture.url}}" alt=""
-                        style="object-fit: cover;" />
+                    <img class="img-fluid position-absolute w-100 h-100" style="object-fit:contain;"
+                        src="{{user.profile_picture.url}}" alt="" style="object-fit: cover;" />
                     {% else %}
                     <img class="img-fluid position-absolute w-100 h-100" src="{% static 'base/img/about.jpg' %}" alt=""
                         style="object-fit: cover;" />
@@ -57,51 +57,16 @@
                 </h6>
             </div>
             <div class="row g-4 justify-content-center">
-                {% for course in courses %}
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item bg-light">
-                        <div class="position-relative overflow-hidden">
-                            <!-- <img class="img-fluid" src="{{course.cover_photo.url}}" alt="" /> -->
-                            <img class="img-fluid" src="{{course.cover_photo.url}}" alt="" />
-                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                                <a href="{% url 'course_details' slug=course.slug %}"
-                                    class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
-                                    style="border-radius: 30px 0 0 30px;">Read More</a>
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3"
-                                    style="border-radius: 0 30px 30px 0;">Join Now</a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4 pb-0">
-                            <h3 class="mb-0"> &#x20A6; {{course.price}}</h3>
-                            <div class="mb-3">
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small>(123)</small>
-                            </div>
-                            <h5 class="mb-4">
-                                {{course.title}}
-                            </h5>
-                        </div>
-                        <div class="d-flex border-top">
-                            <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-user-tie text-primary me-2"></i>{{course.tutor.get_full_name}}</small>
-                            <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-clock text-primary me-2"></i>{{course.modules.count}} Modules</small>
-                            <small class="flex-fill text-center py-2"><i
-                                    class="fa fa-user text-primary me-2"></i>{{course.enrolements.count}}
-                                Enroled</small>
-                        </div>
-                    </div>
-                </div>
+                {% for enrolement in enrolements %}
+                {% include 'courses/elements/course.html' with course=enrolement.course %}
                 {% endfor %}
-                {% if not courses %}
                 <div class="text-center">
-                    <p class="text-center">You have not enroled in any course yet.</p>
                     <a href="{% url 'courses_list' %}" class="btn btn-primary"> Explore Courses</a>
                     <a href="{% url 'categories_list' %}" class="btn btn-primary"> Browse Topics</a>
+                </div>
+                {% if not enrolements %}
+                <div class="text-center">
+                    <p class="text-center">You have not enroled in any course yet.</p>
                 </div>
                 {% endif %}
             </div>

@@ -1,0 +1,1 @@
+web: gunicorn tutornet.wsgi --log-file -

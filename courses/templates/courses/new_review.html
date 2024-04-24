@@ -1,0 +1,67 @@
+{% extends 'base/base.html' %} {% load humanize %} {% load static %} {% block title %} {{course.title}} |
+Tutornet {% endblock %} {% block content %}
+<!-- Header Start -->
+
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <h2 class="text-uppercase text-center">Leave a Review</h2>
+        <p class="text-center">
+            {{course.title}}
+        </p>
+        <p>
+        <form method="post" action="{% url 'add_new_review' %}">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="profession" name="profession"
+                            placeholder="profession" />
+                        <label for="name">Profession</label>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="form-floating">
+                        <textarea class="form-control" id="content" name="content" placeholder="content" cols="30"
+                            rows="30"></textarea>
+                        <label for="name">Content</label>
+                    </div>
+                </div>
+                <input type="hidden" name="course_id" value="{{course.id}}">
+
+                <div class="col-12">
+                    <button class="btn btn-primary w-100 py-3" type="submit">
+                        Sutmit
+                    </button>
+                </div>
+                <div class="col-12 text-end">
+                    <a href="{% url 'register_page' %}">Register instead.</a>
+                </div>
+                <div class="col-12 text-end">
+                    <a href="{% url 'reset_password' %}">Forget password?</a>
+                </div>
+            </div>
+        </form>
+        </p>
+
+        <p>
+            <strong>Discount:</strong> {{discount|default:0}}%
+        </p>
+        <p>
+            <strong>Total:</strong>&#x20A6; {{total_amount|default:course.price|intcomma}}
+        </p>
+        <form action="{% url 'complete_enrole_course' course_id=course.id course_slug=course.slug %}">
+
+            <input type="text" hidden name="coupon_code" value="{{coupon_code}}">
+            <input type="number" hidden name="coupon_id" value="{{coupon_id}}">
+
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-warning rounded shadow h-100 ">Proceed To payment</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Content End -->
+
+{% endblock %}

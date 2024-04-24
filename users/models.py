@@ -112,3 +112,19 @@ class User(AbstractBaseUser):
     def is_tutor(self):
         "Is the user a tutor?"
         return self.tutor
+
+
+class CreatorProfile(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.CharField(max_length=220, blank=True, null=True)
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=15)
+    about = models.TextField()
+    whatsapp = models.CharField(max_length=100)
+    facebook = models.CharField(max_length=100)
+    twitter = models.CharField(max_length=100)
+    instagram = models.CharField(max_length=100)
+    linkin = models.CharField(max_length=100)
+    address = models.TextField()
+    owner = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, related_name="creator_profile")
+    date_created = models.DateTimeField(auto_created=True)

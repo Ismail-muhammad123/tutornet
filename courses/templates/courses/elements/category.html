@@ -1,0 +1,12 @@
+{% block category_element %}
+<div class="col-lg-3 col-md-12 wow zoomIn border m-1 text-center" data-wow-delay="0.3s">
+    <a class="position-relative d-block overflow-hidden"
+        href="{% url 'category_courses_list' category_slug=category.slug %}">
+        <img src="{{category.cover_photo.url}}" height="300px" width="200px" style="object-fit:contain;" alt="" />
+        <div class="bg-white text-center position-absolute bottom-0 w-100 end-0 py-2" style="margin: 1px;">
+            <h5 class="m-0">{{category.name}}</h5>
+            <small class="text-primary">{{category.courses.count}} Courses</small>
+        </div>
+    </a>
+</div>
+{% endblock %}

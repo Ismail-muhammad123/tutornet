@@ -1,0 +1,22 @@
+{% block tutor_card %}
+
+<div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="team-item bg-light">
+        <div class="overflow-hidden text-center">
+            <img src="{{tutor.profile_picture.url}}" height="300px" width='100%' alt="" />
+        </div>
+        <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
+            <div class="bg-light d-flex justify-content-center pt-2 px-1">
+                <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-facebook-f"></i></a>
+                <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-twitter"></i></a>
+                <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+        <div class="text-center p-4">
+            <h5 class="mb-0 text-capitalize">{{tutor.get_full_name}}</h5>
+            <small>{{tutor.courses.count}} Courses</small>
+        </div>
+    </div>
+</div>
+
+{%endblock %}

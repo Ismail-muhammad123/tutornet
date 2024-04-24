@@ -1,0 +1,68 @@
+{% extends 'base/base.html' %} {% load humanize %} {% load static %} {% block title %} {{course.title}} |
+Tutornet {% endblock %} {% block content %}
+
+<!-- About Start -->
+<div class="container-xxl pt-5 mb-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
+                <h1 class="text-center text-uppercase">{{course.title}}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About End -->
+
+
+<!-- Preview -->
+<div class="container-xxl">
+    <div class="row">
+        <!-- current module video and info -->
+        <div class="col-sm-12 col-lg-8 col-md-12 tet-center wow fadeInUp" data-wow-delay="0.1s">
+            {% if current_module %}
+            <video width="100%" controls>
+                <source src="{{current_module.video.url}}" type="video/mp4" />
+                Your browser does not support the video playing.
+            </video>
+            <h3 class="m-2 text-capitalize">
+                {{current_module.title}}
+            </h3>
+            <p class="m-3">
+                {{current_module.description}}
+            </p>
+            <div class="my-3">
+                <h4>Attached Documents:</h4>
+                {% for resource in current_module.resources.all %}
+                <a class="text-capitalize ms-2" href="{{resource.file.url}}">{{resource.name}}</a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <video width="100%" controls>
+                <source src="{{course.intoduction_video.url}}" type="video/mp4" />
+                Your browser does not support the video playing.
+            </video>
+            <div class="text-center">
+                <p>Select Any Module to start learning</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- other modules, both previous and subsequent -->
+        <div class="col-sm-12 col-lg-4 col-md-12 wow fadeInUp" data-wow-delay="0.2s">
+            <ul class="list-group">
+                <li class="list-group-item active">Course Modules</li>
+                {% for module in modules %}
+                <li class="list-group-item">
+                    <a class="{% if current_module.id == module.id %} text-primary {% else %} text-dark {% endif %}"
+                        href="{% url 'learn_course_page' course_id=course.id module_id=module.id %}">
+                        <strong class="fs-4 text-capitalize">{{module.title}}</strong>
+                    </a>
+                    <br>
+                    <p class="text-secondary">{{module.description|truncatewords:20 }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
