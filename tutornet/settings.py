@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "testing key insecure")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-PRODUCTION = os.environ.get("PRODUCTION", "True") == "True"
+PRODUCTION = os.environ.get("PRODUCTION", "False") == "True"
 
 HOST_ADDRESS = os.environ.get("HOST_ADDRESS")
 
