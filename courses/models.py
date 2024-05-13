@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from checkout.models import Payment
+from custom_storage.custom_storages import PrivateMediaStorage
 import datetime
 
 User = get_user_model()
@@ -41,7 +42,6 @@ class SubCategory(models.Model):
     def __str__(self) -> str:
         return self.name + ' - ' + self.category.name
     
-
 class Topic(models.Model):
     name = models.CharField(max_length=200)
     slug = models.CharField(max_length=200, null=True, blank=True)
@@ -109,7 +109,7 @@ class Module(models.Model):
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="modules")
     added_at = models.DateTimeField(auto_now_add=True)
-    video = models.URLField(null=True, blank=True)
+    video = models.FileField(null=True, blank=True, storage=PrivateMediaStorage())
     description = models.TextField()
     slug = models.CharField(max_length=200, null=True, blank=True)
 
@@ -124,7 +124,7 @@ class Module(models.Model):
 class SupportDocument(models.Model):
     name = models.CharField(max_length=200)
     type = models.CharField(max_length=200)
-    file = models.FileField(upload_to="course_support_files")
+    file = models.FileField(upload_to="course_support_files", storage=PrivateMediaStorage())
     added_at = models.DateTimeField(auto_now_add=True)
     module = models.ForeignKey(
         Module, on_delete=models.SET_NULL, null=True,  related_name="resources")
@@ -202,6 +202,7 @@ class Question(models.Model):
         Module, on_delete=models.SET_NULL, null=True, related_name="questions")
     created_at = models.DateTimeField(auto_now_add=True)
     body = models.TextField()
+
 
 class Answer(models.Model):
     question = models.ForeignKey(

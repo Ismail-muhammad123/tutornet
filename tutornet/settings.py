@@ -11,15 +11,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "testing key insecure")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-PRODUCTION = os.environ.get("PRODUCTION", "False") == "True"
 
-HOST_ADDRESS = os.environ.get("HOST_ADDRESS")
+HOST_ADDRESS = os.environ.get("HOST_ADDRESS", "")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(" ")
 
 if DEBUG:
     ALLOWED_HOSTS.append("*")
@@ -37,12 +36,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
     'courses',
     'users',
     'tests',
     'checkout',
     'base',
+    'storages',
+    'custom_storage',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -79,18 +82,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tutornet.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -126,71 +117,6 @@ USE_TZ = True
 LOGIN_URL = "/account/login"
 
 
-if PRODUCTION:
-    AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
-    AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")
-    AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-    # Tell django-storages the domain to use to refer to static files.
-    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-
-    # Tell the staticfiles app to use S3Boto3 storage when writing the collected static files (when
-    # you run `collectstatic`).
-
-    # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-    STATICFILES_LOCATION = 'static'
-    STATICFILES_STORAGE = 'custom_storages.StaticStorage'
-
-    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATICFILES_LOCATION}/'
-
-    # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3Boto3Storage'
-    MEDIAFILES_LOCATION = 'media'
-    DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
-
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIAFILES_LOCATION}/'
-
-    # STATICFILES_DIRS = (os.path.join(BASE_DIR, 'staticfiles'),)
-
-    # Default primary key field type
-    # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
-    DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-    DATABASES = {
-       'default': {
-           'ENGINE': 'django.db.backends.postgresql_psycopg2',
-           'NAME': os.environ.get('DB_NAME'),
-           'USER': os.environ.get('DB_USERNAME'),
-           'PASSWORD': os.environ.get('DB_PASSWORD'),
-           'HOST': os.environ.get('DB_HOST'),
-           'PORT': int(os.environ.get('DB_PORT', '5432')),
-        }
-    }
-else:
-
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-    DEBUG = True
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media'
-    STATIC_URL = '/static/'
-    STATIC_ROOT = BASE_DIR / 'static'
-    ALLOWED_HOSTS = ["*"]
-
-
-if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    EMAIL_HOST = 'localhost'
-    EMAIL_PORT = 1025
-    EMAIL_HOST_USER = ''
-    EMAIL_HOST_PASSWORD = ''
-    EMAIL_USE_TLS = False
-    DEFAULT_FROM_EMAIL = 'testing@example.com'
-
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-secondary',
     messages.INFO: 'alert-info',
@@ -200,12 +126,84 @@ MESSAGE_TAGS = {
 }
 
 
+if not DEBUG:
+    AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")
+    AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+    # Tell django-storages the domain to use to refer to static files.
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+
+     # s3 static settings
+    STATIC_LOCATION = 'static'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+    STATICFILES_STORAGE = 'custom_storage.custom_storages.StaticStorage'
+    # s3 public media settings
+    PUBLIC_MEDIA_LOCATION = 'media'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
+    DEFAULT_FILE_STORAGE = 'custom_storage.custom_storages.PublicMediaStorage'
+    # s3 private media settings
+    PRIVATE_MEDIA_LOCATION = 'private'
+    PRIVATE_FILE_STORAGE = 'custom_storage.custom_storages.PrivateMediaStorage'
+
+    DATABASES = {
+        "default": {
+            "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
+            "NAME": os.environ.get("DB_NAME", BASE_DIR / "db.sqlite3"),
+            "USER": os.environ.get("DB_USERNAME", "user"),
+            "PASSWORD": os.environ.get("DB_PASSWORD", "password"),
+            "HOST": os.environ.get("DB_HOST", "localhost"),
+            "PORT": os.environ.get("DB_PORT", "5432"),
+        }
+    }
+
+    # DATABASES = {
+    #    'default': {
+    
+    #     #    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #        'NAME': os.environ.get('DB_NAME'),
+    #        'USER': os.environ.get('DB_USERNAME'),
+    #        'PASSWORD': os.environ.get('DB_PASSWORD'),
+    #        'HOST': os.environ.get('DB_HOST'),
+    #        'PORT': int(os.environ.get('DB_PORT', '5432')),
+    #     }
+    # }
+else:
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+    STATIC_URL = '/staticfiles/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    MEDIA_URL = '/mediafiles/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
+
+
+    ALLOWED_HOSTS = ["*"]
+
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    EMAIL_HOST = 'localhost'
+    EMAIL_PORT = 1025
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
+    EMAIL_USE_TLS = False
+    DEFAULT_FROM_EMAIL = 'testing@example.com'
+
+
 # Payment variables
 # REDIRECT_URL = reverse_lazy("verify_payment")
 REDIRECT_URL = f"{HOST_ADDRESS}/checkout/verify/"
 PAYMENT_GATEAWAY_URL = "https://api.paystack.co/transaction/initialize"
 PAYMENT_VERIFICATION_URL = " https://api.paystack.co/transaction/verify/"
 PAYMENT_GATEAWAY_SECRET_KEY = os.environ.get(
-    "PAYMENT_GATEAWAY_SECRET_KEY") if PRODUCTION else "sk_test_101c18b159003a6834c9afdce74ad605c263e9ff"
+    "PAYMENT_GATEAWAY_SECRET_KEY") if DEBUG else "sk_test_101c18b159003a6834c9afdce74ad605c263e9ff"
 PAYMENT_GATEAWAY_PUBLIC_KEY = os.environ.get(
-    "PAYMENT_GATEAWAY_PUBLIC_KEY") if PRODUCTION else "pk_test_30a432931b900200ba3ac5e7a21141f1d136e99e"
+    "PAYMENT_GATEAWAY_PUBLIC_KEY") if DEBUG else "pk_test_30a432931b900200ba3ac5e7a21141f1d136e99e"
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
