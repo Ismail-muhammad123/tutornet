@@ -18,8 +18,8 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 HOST_ADDRESS = os.environ.get("HOST_ADDRESS", "")
 
-# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(" ")
-ALLOWED_HOSTS=['*']
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(" ")
+# ALLOWED_HOSTS=['*']
 
 # Application definition
 
