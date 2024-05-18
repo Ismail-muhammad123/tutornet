@@ -21,12 +21,6 @@ HOST_ADDRESS = os.environ.get("HOST_ADDRESS", "")
 # ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(" ")
 ALLOWED_HOSTS=['*']
 
-# if DEBUG:
-#     ALLOWED_HOSTS.append("*")
-# else:
-#     ALLOWED_HOSTS.append(HOST_ADDRESS)
-
-
 # Application definition
 
 INSTALLED_APPS = [
