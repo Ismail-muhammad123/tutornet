@@ -5,6 +5,35 @@ build:
     build:
       - pip install -r requirements.txt
 run:
+  secrets:
+    - name: SECRET_KEY
+      value: somerandomcharaktas
+    - name: HOST_ADDRESS
+      value: *
+    - name: DB_ENGINE
+      value: _
+    - name: DB_NAME
+      value: _
+    - name: DB_USERNAME
+      value: _
+    - name: DB_PASSWORD
+      value: _
+    - name: DB_HOST
+      value: _
+    - name: DB_PORT
+      value: _
+    - name: AWS_STORAGE_BUCKET_NAME
+      value: _
+    - name: AWS_S3_REGION_NAME
+      value: _
+    - name: AWS_ACCESS_KEY_ID
+      value: _
+    - name: AWS_SECRET_ACCESS_KEY
+      value: _
+    - name: PAYMENT_GATEAWAY_SECRET_KEY
+      value: _
+    - name: PAYMENT_GATEAWAY_PUBLIC_KEY
+      value: _
   runtime-version: 3.8.16
   command: sh startup.sh
   network:

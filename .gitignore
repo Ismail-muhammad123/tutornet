@@ -3,3 +3,4 @@ venv/
 .env.dev
 media/
 staticfiles/
+*/apprunner.yaml
