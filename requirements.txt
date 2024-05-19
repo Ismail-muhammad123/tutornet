@@ -24,3 +24,5 @@ sqlparse==0.4.2
 toml==0.10.2
 tzdata==2022.2
 urllib3==1.26.12
+pysqlite3
+pysqlite3-binary
