@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "hghfcgfvhbjnk")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
@@ -196,9 +196,9 @@ REDIRECT_URL = f"{HOST_ADDRESS}/checkout/verify/"
 PAYMENT_GATEAWAY_URL = "https://api.paystack.co/transaction/initialize"
 PAYMENT_VERIFICATION_URL = " https://api.paystack.co/transaction/verify/"
 PAYMENT_GATEAWAY_SECRET_KEY = os.environ.get(
-    "PAYMENT_GATEAWAY_SECRET_KEY") if DEBUG else "sk_test_101c18b159003a6834c9afdce74ad605c263e9ff"
+    "PAYMENT_GATEAWAY_SECRET_KEY") if not DEBUG else "sk_test_101c18b159003a6834c9afdce74ad605c263e9ff"
 PAYMENT_GATEAWAY_PUBLIC_KEY = os.environ.get(
-    "PAYMENT_GATEAWAY_PUBLIC_KEY") if DEBUG else "pk_test_30a432931b900200ba3ac5e7a21141f1d136e99e"
+    "PAYMENT_GATEAWAY_PUBLIC_KEY") if not DEBUG else "pk_test_30a432931b900200ba3ac5e7a21141f1d136e99e"
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
